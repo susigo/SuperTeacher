@@ -290,6 +290,108 @@ published_pages | project_id、version_id、slug、visibility、runtime_version 
 generation_runs | prompt、model、status、warnings_json | 追踪生成过程和质量问题
 assets | project_id、type、url、metadata_json | 截图、视频、素材、导出文件
 
+10.4 部署与运维设计
+SuperTeacher 以 GitHub 仓库作为代码源，首发部署目标为单台 Ubuntu VPS。部署设计必须支持运维人员通过少量命令完成安装、启动、升级、日志查看和备份。
+
+推荐首发部署方式：Docker Compose + Caddy + Postgres。本阶段不依赖 Vercel、Railway、Render 等托管平台作为唯一生产路径，也不要求教师端安装 daemon 或本地客户端。
+
+生产环境服务组成：
+
+服务 | 职责 | MVP 是否需要
+Caddy | HTTPS、域名反向代理、gzip 压缩 | 必须
+frontend | Next.js 教师工作台、授课页、发布页 | 必须
+backend | API、AI 生成编排、项目保存、发布管理 | 必须
+postgres | 项目、版本、生成记录、发布记录 | 必须
+storage volume | 发布产物、截图、上传资源、本地文件存储 | 必须
+redis | 任务队列、限流、缓存、视频导出队列 | 第二阶段
+
+推荐部署目录结构：
+
+SuperTeacher/
+├── deploy/
+│   ├── docker-compose.yml
+│   ├── docker-compose.prod.yml
+│   ├── caddy/
+│   │   └── Caddyfile
+│   ├── nginx/
+│   │   └── superteacher.conf
+│   └── systemd/
+│       └── superteacher.service
+├── scripts/
+│   ├── install.sh
+│   ├── start.sh
+│   ├── stop.sh
+│   ├── restart.sh
+│   ├── update.sh
+│   ├── logs.sh
+│   ├── backup.sh
+│   └── healthcheck.sh
+├── .env.example
+├── Dockerfile.frontend
+└── Dockerfile.backend
+
+标准上线流程：
+
+git clone https://github.com/your-org/SuperTeacher.git
+cd SuperTeacher
+cp .env.example .env
+# 修改 .env 中的域名、数据库密码、AI API Key 和密钥
+bash scripts/install.sh
+bash scripts/start.sh
+
+后续维护命令：
+
+命令 | 用途
+bash scripts/update.sh | 从 GitHub 拉取最新代码、构建镜像、执行迁移、重启服务
+bash scripts/logs.sh | 查看 frontend/backend 日志
+bash scripts/restart.sh | 重启所有服务
+bash scripts/backup.sh | 备份 Postgres 和本地发布产物
+bash scripts/healthcheck.sh | 检查 frontend、backend、database、storage 是否可用
+
+.env.example 至少包含：
+
+APP_ENV=production
+APP_DOMAIN=your-domain.com
+APP_URL=https://your-domain.com
+
+POSTGRES_DB=superteacher
+POSTGRES_USER=superteacher
+POSTGRES_PASSWORD=change-me
+DATABASE_URL=postgresql://superteacher:change-me@postgres:5432/superteacher
+
+ANTHROPIC_API_KEY=
+AI_MODEL=claude-sonnet-4-6
+
+JWT_SECRET=change-me
+SESSION_SECRET=change-me
+
+STORAGE_DRIVER=local
+STORAGE_LOCAL_PATH=/app/storage
+PUBLIC_UPLOAD_MAX_MB=20
+CORS_ORIGIN=https://your-domain.com
+
+部署原则：
+1. 所有配置通过 .env 管理，.env 不提交 Git，.env.example 提交 Git。
+2. install.sh 负责安装 Docker、Docker Compose plugin、创建数据目录、初始化环境。
+3. start.sh 只负责启动服务和运行健康检查，不做破坏性初始化。
+4. update.sh 负责 git pull、docker compose build、数据库迁移、重启和健康检查。
+5. 数据库端口不暴露到公网，只开放 80/443；SSH 由服务器安全策略单独管理。
+6. 发布课件使用 immutable artifact：发布后固定 slug、version、runtime_version 和 concept.json，避免课堂期间内容漂移。
+7. 本地 storage volume 作为 MVP 默认存储，后续可平滑迁移到 S3、Cloudflare R2 或阿里云 OSS。
+8. 生成接口必须有限流和鉴权；发布页只读访问。
+9. 每个服务必须提供 healthcheck，部署脚本以健康检查结果作为成功标准。
+10. 备份脚本必须同时覆盖 Postgres 数据和 storage/published 产物。
+
+发布产物建议结构：
+
+storage/published/{slug}/
+├── manifest.json
+├── concept.json
+├── assets/
+└── snapshots/
+
+manifest.json 记录 project_id、version_id、runtime_version、published_at、visibility 和 artifact checksum。这样可以保证课堂链接稳定、便于回滚、备份和未来 CDN 化。
+
 11. MVP 与 90 天产品路线
 11.1 14 天最小闭环
 1.  fork Open Design，锁定一个 commit，建立 upstream 同步策略。
