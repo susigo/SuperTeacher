@@ -35,7 +35,9 @@ Use Open Design as a reference for:
 - preview and artifact lifecycle ideas
 - design-system inspiration
 
-Do not assume SuperTeacher should directly fork or deeply couple itself to Open Design unless explicitly decided later.
+Architecture decision after source analysis: SuperTeacher should reuse Open Design as the product workbench base, not only as UI inspiration. The detailed reuse plan is in `docs/open-design-reuse-analysis.md`.
+
+The current lightweight `frontend/` app is a disposable prototype for the education runtime loop. It should not become the long-term product shell. Long-term product development should move toward an Open Design-derived `apps/web` + `apps/daemon` workbench with SuperTeacher-specific education packages and skills.
 
 ## Engineering direction
 

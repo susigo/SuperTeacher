@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false
+  },
+  "files": [],
+  "references": [
+    { "path": "./packages/contracts" },
+    { "path": "./packages/prompts" },
+    { "path": "./packages/edu-validation" },
+    { "path": "./packages/edu-runtime" },
+    { "path": "./packages/edu-components" },
+    { "path": "./backend" },
+    { "path": "./frontend" }
+  ]
+}

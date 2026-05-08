@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@superteacher/contracts": ["packages/contracts/src/index.ts"],
+      "@superteacher/contracts/*": ["packages/contracts/src/*"],
+      "@superteacher/edu-runtime": ["packages/edu-runtime/src/index.ts"],
+      "@superteacher/edu-runtime/*": ["packages/edu-runtime/src/*"],
+      "@superteacher/edu-components": ["packages/edu-components/src/index.ts"],
+      "@superteacher/edu-components/*": ["packages/edu-components/src/*"],
+      "@superteacher/edu-validation": ["packages/edu-validation/src/index.ts"],
+      "@superteacher/edu-validation/*": ["packages/edu-validation/src/*"]
+    },
+    "types": ["node"]
+  }
+}
