@@ -1,0 +1,588 @@
+AI 互动动态课件产品综合方案
+基于 Open Design 的技术设计 + MVP 路线 + 抖音增长策略
+版本：v0.1 · 生成日期：2026-05-08
+
+一句话定位 让教师输入一个抽象概念，AI 生成一个可拖、可动、可播放、可分享的浏览器互动演示。
+这不是 AI PPT，而是 Concept-to-Interaction：把知识点变成课堂可用的小型交互应用。
+
+适用对象：创始人、产品负责人、技术负责人、增长负责人。
+使用方式：先按第 11 章执行 14 天 MVP；同时用第 12 章开始抖音内容测试。
+目录
+1. 核心结论
+2. 产品定位与战略判断
+3. 竞品与机会区间
+4. Open Design 仓库分析结论
+5. 总体技术架构
+6. 教育 DSL 与 ConceptSpec
+7. 教学交互组件库设计
+8. AI 编排与内容校验
+9. 教师工作台、授课态与发布系统
+10. 数据、API 与工程结构
+11. MVP 与 90 天产品路线
+12. 抖音推广策略
+13. 关键指标、风险与合规
+14. 下一步执行清单
+附录 A：ConceptSpec 示例
+附录 B：Open Design 教育 Skill 示例
+附录 C：参考资料与注记
+1. 核心结论
+
+最重要的判断 可行，但不要做“另一个 AI PPT”。你的产品应该是“AI 教学动效引擎”：AI 理解抽象概念，生成结构化教学交互描述；稳定的浏览器 Runtime 负责把它渲染成可上课使用的互动演示。
+
+目前 AI PPT、AI 备课、AI 教案已经很拥挤。真正有机会的切口不是“生成更漂亮的幻灯片”，而是“把抽象知识变成能操作、能演示、能观察变量变化的浏览器交互页面”。
+一句话产品：老师输入知识点，AI 生成浏览器里的互动概念演示。
+第一目标用户：公开课/赛课老师、教培讲师、知识博主、STEM/数学/物理老师。
+第一版不要做全学科完整课件，而做“一个概念一个互动卡片”。
+技术核心不要依赖 AI 自由写前端代码，而是建设教育 DSL + 稳定组件库。
+Open Design 适合做生成工作台、Skills、设计系统、Artifact 预览和导出底座；教育交互 Runtime 必须自建。
+抖音增长不要卖软件，先卖“一个概念突然被讲明白的瞬间”。
+
+维度 | 建议结论 | 原因
+产品形态 | Concept Card：一个知识点一个互动网页 | 比完整课件更容易验证价值，也更容易短视频传播
+首发学科 | 数学函数/几何 + 初级物理 | 变量关系清晰、视觉反馈强、老师痛点明显
+技术路线 | Open Design fork + Edu DSL + Edu Runtime | 既复用开源底座，又形成自己的教育壁垒
+默认生成路径 | AI 生成 JSON 结构，组件库渲染 | 稳定、可编辑、可校验，适合课堂
+增长渠道 | 抖音案例短视频 + 老师点题生成 | 产品天然适合“演示型内容”传播
+商业验证 | 免费生成 3 个 → 内测群 → 早鸟会员/机构试用 | 先让老师真实用一次，再谈转化
+
+2. 产品定位与战略判断
+2.1 不做 AI PPT，做 Concept-to-Interaction
+传统 AI PPT 的核心价值在排版、文案和模板；你的核心价值应在“交互解释”。也就是说，AI 不是帮老师把资料排成幻灯片，而是把一个抽象概念拆成变量、关系、步骤、误区和课堂互动。
+
+抽象概念 → 教学拆解 → 交互模型 → 动效场景 → 浏览器演示页面
+
+例如，老师输入“初三二次函数 y=a(x-h)^2+k 的图像变换”，产品输出的不是 6 页静态 PPT，而是一个可拖动 a/h/k、图像实时变化、讲解词随步骤出现的网页演示。
+2.2 核心价值主张
+浏览器即开即用：无需安装、可投屏、可分享链接。
+变量可操作：学生能看到“改变参数后会发生什么”。
+讲解有节奏：支持逐步播放、暂停、回退、隐藏答案。
+教师可编辑：能改标题、讲解词、变量范围、步骤、速度和主题。
+适合内容传播：每个互动演示都可以导出短视频或分享链接。
+2.3 首批用户画像
+
+用户群 | 痛点 | 产品钩子 | 优先级
+公开课/赛课老师 | 需要高级、直观、有表现力的课堂演示 | “把难讲概念做成可互动动画” | 最高
+教培机构讲师 | 课堂吸引力和续班体验重要 | “浏览器打开即可上课，学生更容易看懂” | 高
+知识类短视频博主 | 需要把知识讲得好看、易传播 | “导出 15 秒概念短视频” | 高
+数学/物理/STEM 老师 | 抽象变量和过程难讲 | “拖动变量，过程自动演示” | 最高
+普通学校教师 | 日常备课时间紧，但付费敏感 | “免费生成 3 个，公开课先用” | 中
+
+3. 竞品与机会区间
+市场上已有大量 AI PPT、AI 备课和通用 AI 前端生成工具。机会不在“更快生成 PPT”，而在“把知识点变成可互动的教学小应用”。
+
+赛道 | 竞争强度 | 典型玩家/形态 | 你的策略
+AI 一键生成 PPT | 极高 | Gamma、Canva、讯飞/WPS、Microsoft 等 | 不正面竞争，不强调模板排版
+AI 教案/题目/备课 | 很高 | MagicSchool、Canva、希沃、国内教育平台 | 只把它作为辅助能力，不作为核心卖点
+AI 生成前端/UI | 中高 | Claude Artifacts、v0、Open Design、Lovable、Bolt 等 | 复用思路，但垂直到教育交互
+互动动态课件 | 中等 | 部分课件平台/白板/模板库 | 强调浏览器轻量、AI 自动生成、可分享
+知识点交互小应用 | 中等偏低 | 分散的科普网站、仿真实验、GeoGebra 等 | 用 AI 降低制作门槛，聚焦教师上课工作流
+
+
+机会区间 “AI PPT”是红海；“AI 把抽象概念变成可交互浏览器演示”仍有空间。尤其是数学、物理、生物、地理等需要动态过程的学科。
+
+4. Open Design 仓库分析结论
+Open Design 适合作为底座，但不能直接当作最终产品。它更像一个“AI 设计 Artifact 工作台”，而不是教育课件系统。建议复用它的 Web UI、Skills、Design Systems、Artifact 预览和导出能力；同时把教育交互逻辑抽出来，做自己的 Edu Runtime。
+4.1 值得复用的部分
+
+Open Design 能力 | 可复用方式 | 注意点
+Chat + Artifact 生成界面 | 作为教师输入概念、预览结果的工作台 | 要改成教师语言，不要像开发工具
+Skills 机制 | 新增 edu-concept-card、edu-interaction-deck 等教育 skill | Skill 只生成结构化 spec，不要放任自由代码
+Design Systems | 改造成课堂视觉系统：黑板风、实验室风、数学极简风 | 从品牌设计系统转成教学表达系统
+iframe sandbox preview | 用于预览 AI 生成的 HTML/JS 或 Runtime 页面 | 正式授课优先使用可信 Runtime 路径
+导出框架 | 复用 HTML/ZIP/PDF，后续扩展视频/PPTX | 导出结果要能离线打开
+local daemon / API 模式 | 开发期可用；云端 SaaS 需要改造 | 教师端不能要求安装 daemon 或配置 CLI
+
+4.2 不能照搬的部分
+Open Design 默认倾向“AI 直接生成前端代码”，这对课堂稳定性风险较高。
+Open Design 的 local-first/daemon 模式适合开发者，不适合普通教师的首次体验。
+默认产物偏设计 artifact，而非可校验的教学模型。
+课堂现场对错误和崩溃的容忍度非常低，必须有确定性校验和稳定组件。
+
+集成原则 Open Design 负责“生成工作台和预览外壳”；你的产品负责“教学交互是否正确、稳定、可授课”。
+
+5. 总体技术架构
+
+┌─────────────────────────────────────────────┐
+│ 1. Teacher Studio 教师生成/编辑工作台        │
+│    基于 Open Design Web UI 改造              │
+└──────────────────────┬──────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────┐
+│ 2. Education AI Orchestrator 教育编排层      │
+│    概念拆解 / 模板选择 / 脚本生成 / 审核     │
+└──────────────────────┬──────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────┐
+│ 3. Education Interaction Runtime 渲染层      │
+│    DSL Schema + 稳定组件库 + 动效引擎        │
+└──────────────────────┬──────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────┐
+│ 4. Browser Delivery 发布层                   │
+│    分享链接 / 全屏授课 / iframe 嵌入 / 导出  │
+└─────────────────────────────────────────────┘
+
+5.1 主生成链路
+
+教师输入知识点
+  ↓
+LLM 做教学分析：学科、年级、变量、误区、交互模板
+  ↓
+生成 ConceptSpec JSON
+  ↓
+Schema 校验 + 学科校验
+  ↓
+Edu Runtime 渲染互动页面
+  ↓
+教师编辑讲解词、变量范围、步骤、动画速度
+  ↓
+发布浏览器链接 / 全屏授课 / 导出 HTML 或视频
+
+5.2 两条渲染路径
+
+路径 | 流程 | 适用场景 | 优先级
+可信路径 | AI → ConceptSpec → 官方组件库渲染 | 教师课堂、正式发布、可编辑资产 | 默认主路径
+自由创作路径 | AI → HTML/CSS/JS → sandbox iframe | 高级创作、实验、特殊视觉效果 | 辅助路径
+
+6. 教育 DSL 与 ConceptSpec
+ConceptSpec 是产品的长期资产。HTML 只是展示结果；ConceptSpec 才能被编辑、复用、校验、版本化和批量生成。
+
+模块 | 内容 | 用途
+concept | 标题、摘要、学习目标、常见误区 | 让 AI 输出可审核的教学意图
+interaction | 模板、变量、控件、公式、渲染引擎 | 让 Runtime 确定如何显示和互动
+storyboard | 每一步的动作、强调对象、讲解词 | 让课堂讲解有节奏
+assessment | 课堂提问、即时检测、答案 | 帮助老师做互动反馈
+theme | 设计系统、动效强度、色彩主题 | 控制视觉风格和课堂氛围
+metadata | 学科、年级、教材版本、版本号 | 便于检索、复用和未来商业化
+
+6.1 最小字段设计
+
+ConceptSpec
+- schemaVersion
+- projectType: concept-card | interaction-deck
+- subject / grade / curriculum
+- concept: title / summary / learningGoals / misconceptions
+- interaction: template / variables / formula / engine
+- storyboard: steps / actions / teacherScript
+- assessment: questions / answers
+- theme: designSystem / motionIntensity
+
+7. 教学交互组件库设计
+组件库是护城河。模型可以替换，Open Design 可以替换，但高质量、可校验、可编辑、适合课堂的教学动效组件会持续积累复利。
+
+模板 ID | 首发用途 | 渲染引擎 | 第一版优先级
+function-transform | 一次/二次/三角函数图像变换 | SVG + KaTeX | P0
+geometry-transform | 平移、旋转、对称、缩放 | SVG | P0
+formula-relation | F=ma、v=s/t、密度公式等变量关系 | SVG + Controls | P0
+vector-force | 力的合成、分解、斜面受力 | SVG | P1
+probability-simulator | 抛硬币、抽球、随机实验 | Canvas | P1
+circuit-basic | 开关、电流、电压、电阻变化 | SVG | P1
+particle-motion | 分子运动、扩散、碰撞 | Canvas | P2
+timeline-process | 细胞分裂、历史事件、地理过程 | DOM + Motion | P2
+
+7.1 组件统一接口
+
+export interface EduInteractionComponent<TSpec> {
+  id: string;
+  subject: string[];
+  validate(spec: TSpec): ValidationResult;
+  render(spec: TSpec, runtime: EduRuntimeContext): React.ReactNode;
+  getDefaultSpec(input: ConceptInput): TSpec;
+  exportSnapshot(spec: TSpec): Promise<Blob>;
+}
+
+7.2 技术选型建议
+
+用途 | 建议技术 | 原因
+工作台 | Next.js / React / TypeScript | 与 Open Design 栈一致，开发效率高
+Schema 校验 | Zod / JSON Schema | 约束 AI 输出，便于前后端共享
+数学/几何/矢量 | SVG + D3 scale + KaTeX | 清晰、可交互、截图质量好
+粒子/随机实验 | Canvas | 性能更好，适合大量对象运动
+复杂动效时间线 | Motion One / Framer Motion / GSAP | 可控、流畅、易做步骤动画
+3D 场景 | Three.js | 后期用于分子、天体、空间几何
+导出视频 | Remotion 或 HyperFrames 思路 | 把浏览器演示转换为视频内容资产
+截图/冒烟测试 | Playwright | 验证页面加载、交互和导出
+
+8. AI 编排与内容校验
+教育 AI 编排不建议只写一个大 prompt。更稳的方式是拆成多个步骤：分析概念、选择模板、生成 spec、校验内容、渲染发布。
+
+步骤 | 职责 | 输出
+1. Concept Analyzer | 识别学科、年级、概念类型、核心变量、常见误区 | conceptType、variables、misconceptions
+2. Template Router | 从组件库选择最适合模板，系统最终裁决 | templateId、fallback strategy
+3. Spec Generator | 生成 ConceptSpec JSON、讲解词、步骤、问题 | 完整 ConceptSpec
+4. Content Validator | 检查知识点、变量关系、年级难度和误导表达 | warnings、修正建议
+5. Renderer | 交给官方组件渲染，生成预览和发布页 | previewUrl、publishable artifact
+
+8.1 校验策略
+Schema validation：所有 AI 输出必须通过 Zod/JSON Schema。
+Domain validation：数学检查公式、采样点、变量范围；物理检查单位、方向、比例关系。
+LLM critic：让模型再审查是否有错误、误导、年级不匹配。
+Browser smoke test：Playwright 检查加载、console error、控件拖动、步骤切换、截图。
+教师审核提示：发布前显示“AI 辅助生成，建议教师审核后使用”。
+
+课堂稳定性原则 越靠近真实课堂，越要少依赖 AI 自由代码；越靠近创意探索，才可以开放自由 HTML/JS 生成。
+
+9. 教师工作台、授课态与发布系统
+9.1 编辑态
+
+左侧：Prompt / AI 对话 / 学科年级输入
+中间：互动演示实时预览
+右侧：教师编辑面板
+底部：步骤时间线 / 播放控制 / 发布按钮
+
+老师能改：标题、讲解词、变量范围、步骤顺序、动画速度、问题、答案显示、主题。
+老师不需要改：代码、CSS、React 组件、复杂坐标配置。
+编辑体验要像“改课件内容”，不要像“改网页代码”。
+9.2 授课态
+浏览器全屏展示，复杂编辑 UI 全部隐藏。
+底部只保留：上一步、下一步、播放/暂停、重置、隐藏讲解词、显示问题。
+支持键盘快捷键、投屏、移动端基本查看、无登录打开。
+发布链接形式建议：/p/:slug；也可生成 iframe 嵌入码。
+9.3 发布与导出
+
+能力 | MVP 是否做 | 说明
+分享链接 | 必须 | 课堂和传播的核心
+单 HTML 下载 | 建议做 | 提高信任感，支持离线备份
+PNG 截图 | 建议做 | 方便插回 PPT 或资料
+MP4/GIF 导出 | 第二阶段 | 用于抖音传播和知识博主
+PPTX 导出 | 后期 | 复杂度高，可先用截图/链接替代
+LMS/飞书/Notion iframe | 后期 | 适合机构和知识库场景
+
+10. 数据、API 与工程结构
+10.1 建议目录结构
+
+open-design/
+├── apps/web/src/edu/
+│   ├── ConceptEditor.tsx
+│   ├── ConceptPreview.tsx
+│   ├── PresenterMode.tsx
+│   └── components/
+├── apps/daemon/src/edu/
+│   ├── generate.ts
+│   ├── validate.ts
+│   ├── publish.ts
+│   └── template-router.ts
+├── packages/edu-contracts/
+├── packages/edu-runtime/
+├── packages/edu-components/
+├── skills/edu-concept-card/
+└── design-systems/edu-clean/ chalkboard/ science-lab/
+
+10.2 API 草案
+
+POST /api/edu/analyze
+POST /api/edu/generate
+POST /api/edu/validate
+POST /api/edu/render
+POST /api/edu/refine
+POST /api/edu/publish
+POST /api/edu/export/html
+POST /api/edu/export/video
+GET  /api/edu/projects/:id
+GET  /api/edu/published/:slug
+
+10.3 数据表草案
+
+表 | 关键字段 | 作用
+projects | id、owner_id、title、subject、grade、created_at | 项目主表
+concept_versions | project_id、version、concept_spec_json、validation_status | 每次生成/编辑的版本
+published_pages | project_id、version_id、slug、visibility、runtime_version | 发布链接和可访问版本
+generation_runs | prompt、model、status、warnings_json | 追踪生成过程和质量问题
+assets | project_id、type、url、metadata_json | 截图、视频、素材、导出文件
+
+11. MVP 与 90 天产品路线
+11.1 14 天最小闭环
+1.  fork Open Design，锁定一个 commit，建立 upstream 同步策略。
+2.  新增 edu-concept-card skill，要求输出 concept.json + index.html。
+3.  实现 packages/edu-contracts：ConceptSpec v0.1 + Zod schema。
+4.  实现第一个组件 FunctionTransform：支持 a/h/k 滑块、顶点标注、逐步播放。
+5.  把 Artifact preview 接到 Edu Runtime，能在浏览器里预览。
+6.  做一个教师编辑面板：讲解词、变量范围、步骤顺序、动画速度。
+7.  做分享链接或单 HTML 导出，确保没有登录也能打开演示。
+11.2 90 天路线图
+
+阶段 | 时间 | 目标 | 交付物
+Phase 1 | 第 1-2 周 | 跑通一个数学概念闭环 | FunctionTransform、ConceptSpec、预览、分享
+Phase 2 | 第 3-4 周 | 支持 3-5 个数学/物理模板 | GeometryTransform、FormulaRelation、VectorForce 雏形
+Phase 3 | 第 5-8 周 | 开放内测，收集教师真实需求 | 内测入口、项目保存、基础数据看板
+Phase 4 | 第 9-12 周 | 强化传播和商业验证 | 视频导出实验、早鸟会员、机构试用包
+
+11.3 首批 Demo 题库
+
+学科 | Demo | 目的
+数学 | 二次函数 y=a(x-h)^2+k 图像变换 | 验证变量滑块和图像动效
+数学 | 一次函数斜率与截距 | 验证函数图像和解释文本联动
+数学 | 几何图形平移/旋转/对称 | 验证图形变换组件
+物理 | F=ma 三个变量关系 | 验证公式变量关系组件
+物理 | 力的合成与分解 | 验证矢量组件和箭头动效
+科学 | 概率随机实验 | 验证 Canvas 和模拟过程
+
+12. 抖音推广策略
+
+抖音核心打法 不要先推广“AI 软件”，而是每天用 15-30 秒视频证明：一个抽象概念可以被 AI 变成浏览器里的互动动画。
+
+12.1 账号定位
+账号名建议：AI 动态课件实验室、抽象概念动画工厂、互动课件生成器。
+主页一句话：一句话生成互动教学动画，浏览器打开就能上课。
+内容风格：录屏 + 大字幕 + 快节奏旁白；开头 1 秒直接上动效。
+不要讲 Open Design、Claude Design、技术架构；先讲老师的课堂痛点。
+12.2 内容矩阵
+
+栏目 | 形式 | 目标
+一句话生成课堂动画 | 输入 prompt → 展示互动网页 | 建立产品认知
+PPT vs AI 动态课件 | 静态讲法对比动态演示 | 放大痛点和差异
+老师最难讲的 100 个概念 | 系列化选题 | 形成持续关注
+评论区点题，我来生成 | 老师留言 → 第二天生成 | 建立互动增长循环
+公开课高级感案例 | 展示高质感课堂演示 | 触达付费意愿更高用户
+产品幕后 | 解释为什么不让 AI 乱写代码 | 建立专业信任
+
+12.3 第一批 20 条视频选题
+
+选题 A | 选题 B
+1. 二次函数 h 为什么正数向右？ | 2. 一次函数 k 改变时图像怎么动？
+3. 斜率越大，直线为什么越陡？ | 4. 三角函数单位圆终于看懂了
+5. 勾股定理不只是一张图 | 6. 图形旋转 90° 怎么让学生看懂？
+7. 轴对称和平移的区别 | 8. 概率为什么不是“感觉”？
+9. 抛硬币 1000 次会发生什么？ | 10. 力的合成为什么是平行四边形？
+11. 斜面上的重力怎么分解？ | 12. 摩擦力方向到底怎么看？
+13. F=ma 三个变量怎么互相影响？ | 14. 电流不是“水流”，但可以这样演示
+15. 串联并联电路差在哪？ | 16. 电阻变大，电流怎么变？
+17. 光的折射角怎么变化？ | 18. 杠杆支点移动后为什么会失衡？
+19. 分子热运动为什么温度越高越快？ | 20. 地球公转为什么导致四季？
+
+12.4 25 秒视频模板
+
+0-2 秒：这是 AI 生成的二次函数互动课件。
+2-8 秒：拖动 h，图像左右移动。
+8-15 秒：拖动 k，图像上下移动。
+15-21 秒：讲解词自动跟随步骤出现。
+21-25 秒：浏览器打开就能用。评论“函数”发你体验版。
+
+12.5 转化链路
+
+抖音视频
+  ↓
+评论关键词 / 私信关键词
+  ↓
+体验入口：免费生成 3 个互动概念演示
+  ↓
+内测名单 / 教师社群 / 深度访谈
+  ↓
+早鸟会员 / 机构试用 / 模板包购买
+
+12.6 直播与达人合作
+每周一次直播：老师评论区发知识点，我现场生成互动动画。
+优先找小而准的数学老师、物理老师、课件制作博主、知识可视化博主。
+合作形式：免费帮达人做一个互动演示，达人用自己的教学语言讲。
+直播目的不是立刻卖货，而是收集真实知识点需求和教师反馈。
+13. 关键指标、风险与合规
+13.1 产品指标
+
+指标 | 含义 | 目标
+首次生成成功率 | 老师输入后是否能得到可用演示 | MVP > 60%，两个月 > 80%
+首次生成到分享率 | 生成后是否愿意复制链接/下载 | 验证实际使用意愿
+二次生成率 | 是否愿意再生成第二个概念 | 验证真实需求
+教师编辑率 | 是否修改讲解词/变量/步骤 | 验证编辑器价值
+内容投诉/纠错率 | 知识点错误或误导反馈 | 越低越好，但早期要主动收集
+付费意向访谈数 | 愿意聊付费/机构采购的教师 | 前 90 天 > 30 位
+
+13.2 抖音指标
+
+指标 | 比播放量更重要的原因
+评论区具体知识点数量 | 说明老师真的想用你解决自己的课
+私信/关键词领取数量 | 说明视频产生行动
+体验链接点击率 | 说明转化链路有效
+注册后首次生成率 | 说明落地页和产品门槛可接受
+生成后分享/收藏率 | 说明内容有传播价值
+老师投稿复用率 | 说明内容生产形成循环
+
+13.3 风险与对策
+
+风险 | 表现 | 对策
+AI 内容错误 | 公式、变量关系、讲解词错误 | Schema + 学科校验 + LLM critic + 教师审核提示
+课堂现场崩溃 | 网页打不开、控件失效、投屏卡顿 | 主路径使用官方 Runtime；发布前跑 Playwright 冒烟测试
+老师不会编辑 | 生成后不知道怎么改 | 编辑面板只暴露讲解词、步骤、变量、主题
+赛道被大厂复制 | AI PPT/白板平台增加类似功能 | 快速积累教学组件库、真实教师需求和内容社区
+付费意愿弱 | 个人老师价格敏感 | 先打公开课/教培/知识博主，再做机构版
+抖音合规风险 | 夸大教学效果、AI 内容标识不足 | 避免“保证提分/必拿奖”；标注 AI 辅助生成，建议教师审核
+
+14. 下一步执行清单
+
+建议优先级 技术上先跑通一个数学概念闭环；增长上同时开始发“一个概念一个动效”的短视频。不要等平台完整再做推广。
+
+14.1 未来 7 天
+1.  确认产品名称和一句话定位，主页文案先定为：“一句话生成互动教学动画，浏览器打开就能上课”。
+2.  fork Open Design 并锁定 commit；写 README 说明 fork 目的和 Edu Runtime 方向。
+3.  定义 ConceptSpec v0.1，并写 3 个样例：二次函数、一次函数、F=ma。
+4.  实现 FunctionTransform 组件最小版本：坐标系、曲线、a/h/k 滑块、顶点标注。
+5.  做第一条抖音视频：PPT vs AI 动态二次函数。
+6.  建立教师点题表单：学科、年级、知识点、最难讲的地方、联系方式。
+14.2 未来 30 天
+完成 5 个可展示 Demo，覆盖数学函数、几何、物理公式、力学矢量、概率模拟。
+连续发 60 条抖音短视频，记录每条的评论知识点、私信和体验点击。
+邀请 20 位老师内测，完成至少 10 次深度访谈。
+把老师最高频点题的前 30 个概念整理成组件库路线图。
+上线免费生成 3 个互动演示的内测入口。
+附录 A：ConceptSpec 示例
+
+{
+  "schemaVersion": "0.1.0",
+  "projectType": "concept-card",
+  "subject": "math",
+  "grade": "初三",
+  "concept": {
+    "title": "二次函数图像变换",
+    "summary": "理解 y = a(x-h)^2 + k 中 a、h、k 对抛物线的影响。",
+    "learningGoals": [
+      "知道 h 控制左右平移",
+      "知道 k 控制上下平移",
+      "知道 a 控制开口方向和宽窄"
+    ],
+    "commonMisconceptions": [
+      "容易误以为 h 为正时图像向左移动",
+      "容易只记结论，不理解顶点坐标变化"
+    ]
+  },
+  "interaction": {
+    "template": "function-transform",
+    "engine": "svg",
+    "formula": "y = a(x - h)^2 + k",
+    "variables": [
+      {
+        "id": "a",
+        "label": "a",
+        "type": "slider",
+        "min": -3,
+        "max": 3,
+        "step": 0.1,
+        "default": 1,
+        "meaning": "控制开口方向和宽窄"
+      },
+      {
+        "id": "h",
+        "label": "h",
+        "type": "slider",
+        "min": -5,
+        "max": 5,
+        "step": 0.5,
+        "default": 0,
+        "meaning": "控制左右平移"
+      },
+      {
+        "id": "k",
+        "label": "k",
+        "type": "slider",
+        "min": -5,
+        "max": 5,
+        "step": 0.5,
+        "default": 0,
+        "meaning": "控制上下平移"
+      }
+    ]
+  },
+  "storyboard": [
+    {
+      "id": "step-1",
+      "title": "先看标准抛物线",
+      "action": {
+        "set": {
+          "a": 1,
+          "h": 0,
+          "k": 0
+        },
+        "highlight": [
+          "graph",
+          "vertex"
+        ]
+      },
+      "teacherScript": "我们先从最熟悉的 y=x² 开始，观察它的顶点在原点。"
+    },
+    {
+      "id": "step-2",
+      "title": "改变 h，观察左右平移",
+      "action": {
+        "animate": {
+          "h": {
+            "from": 0,
+            "to": 2,
+            "duration": 1.2
+          }
+        },
+        "highlight": [
+          "vertex",
+          "h-control"
+        ]
+      },
+      "teacherScript": "现在 h 从 0 变成 2，注意顶点移动到了 x=2。"
+    }
+  ],
+  "assessment": [
+    {
+      "type": "concept-check",
+      "question": "如果 h = -3，图像向哪个方向移动？",
+      "answer": "向左移动 3 个单位"
+    }
+  ],
+  "theme": {
+    "designSystem": "math-minimal",
+    "motionIntensity": "medium"
+  }
+}
+
+附录 B：Open Design 教育 Skill 示例
+
+---
+name: edu-concept-card
+description: Generate an interactive browser-based concept explainer for teachers.
+triggers:
+  - 概念讲解
+  - 互动课件
+  - 动态演示
+  - interactive concept
+od:
+  mode: prototype
+  platform: desktop
+  scenario: education
+  preview:
+    type: html
+    entry: index.html
+  design_system:
+    requires: true
+    sections: [color, typography, layout, components, motion]
+  inputs:
+    - name: subject
+      type: enum
+      values: [math, physics, chemistry, biology, geography]
+      required: true
+    - name: grade
+      type: string
+      required: true
+    - name: concept
+      type: string
+      required: true
+  outputs:
+    primary: index.html
+    secondary: [concept.json]
+---
+
+你是一个教师专用的互动概念演示生成器。
+不要直接自由发挥完整前端逻辑；优先生成符合 ConceptSpec 的 concept.json。
+如果必须生成 HTML，只能作为预览壳，核心交互应由 Edu Runtime 渲染。
+
+附录 C：参考资料与注记
+本文件整合了前面对产品定位、Open Design 技术分析和抖音推广策略的讨论。Open Design 相关结论来自公开 GitHub 仓库和文档的静态分析，未做本地 build/run 测试；正式 fork 前应锁定具体 commit 并做一次完整运行验证。
+Open Design GitHub 仓库：https://github.com/nexu-io/open-design
+Open Design Architecture 文档：https://github.com/nexu-io/open-design/blob/main/docs/architecture.md
+Open Design Skills Protocol 文档：https://github.com/nexu-io/open-design/blob/main/docs/skills-protocol.md
+Open Design web-prototype Skill：https://github.com/nexu-io/open-design/blob/main/skills/web-prototype/SKILL.md
+Open Design motion-frames Skill：https://github.com/nexu-io/open-design/blob/main/skills/motion-frames/SKILL.md
+Open Design hyperframes Skill：https://github.com/nexu-io/open-design/blob/main/skills/hyperframes/SKILL.md
+巨量引擎教育培训行业方案：https://m.oceanengine.com/solution/jiaoyu-peixun
+抖音开放平台线索组件说明：https://developer.open-douyin.com/capacity-center-page/capacity-detail/7300500544412516371
+抖音开放平台应用类型文档：https://open.douyin.com/platform/resource/docs/transfer
+抖音用户协议：https://www.douyin.com/agreements/?id=6773906068725565448
+北京市市场监管局：教育培训广告合规提示：https://scjgj.beijing.gov.cn/zwxx/scjgdt/202401/t20240126_3546050.html
+
+最终一句话 产品上：不要做 AI PPT，要做“抽象概念的交互式可视化引擎”。
+技术上：不要让 AI 每次写课件网页，要让 AI 生成教学结构，由稳定 Runtime 演示。
+增长上：不要先卖软件，先展示“概念被讲明白的瞬间”。

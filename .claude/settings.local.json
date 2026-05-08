@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git clone *)",
+      "Bash(git -C 'E:/WorkProjects/AIcoding/SuperTeacher/reference/open-design' ls-files 'apps/*/package.json' 'packages/*/package.json' 'pnpm-workspace.yaml' 'docs/*.md')",
+      "Bash(git -C 'E:/WorkProjects/AIcoding/SuperTeacher/reference/open-design' ls-files 'skills/*/SKILL.md')",
+      "Bash(git -C 'E:/WorkProjects/AIcoding/SuperTeacher/reference/open-design' ls-files 'apps/web/app/**' 'apps/web/src/**')"
+    ]
+  }
+}
