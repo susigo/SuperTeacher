@@ -5,15 +5,22 @@
   "type": "module",
   "packageManager": "npm@10",
   "workspaces": [
+    "apps/*",
     "backend",
     "frontend",
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev -ws --if-present",
-    "build": "npm run build -ws --if-present",
-    "start": "npm run start -ws --if-present",
-    "lint": "npm run lint -ws --if-present",
-    "typecheck": "npm run typecheck -ws --if-present"
+    "dev": "npm run dev:workbench",
+    "dev:prototype": "concurrently -n backend,frontend \"npm run dev -w @superteacher/backend\" \"npm run dev -w superteacher-frontend\"",
+    "dev:workbench": "npm run build:od-shared && concurrently -n daemon,web \"npm run dev -w @open-design/daemon\" \"npm run dev -w @open-design/web\"",
+    "build:od-shared": "npm run build -w @open-design/contracts -w @open-design/platform -w @open-design/sidecar -w @open-design/sidecar-proto",
+    "build": "npm run build:od-shared && npm run build --workspaces --if-present",
+    "start": "npm run start --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run build:od-shared && npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }

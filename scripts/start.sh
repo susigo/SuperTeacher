@@ -9,7 +9,7 @@ if [ -f "$PROJECT_DIR/.env" ]; then
   set +a
 fi
 
-if command -v docker >/dev/null 2>&1 && [ -f deploy/docker-compose.yml ]; then
+if command -v docker >/dev/null 2>&1 && [ -f "$PROJECT_DIR/deploy/docker-compose.yml" ]; then
   docker compose -f "$PROJECT_DIR/deploy/docker-compose.yml" up -d
 else
   (cd "$PROJECT_DIR" && npm run dev -ws --if-present)

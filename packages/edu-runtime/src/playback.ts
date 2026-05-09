@@ -1,0 +1,1 @@
+export const DEFAULT_STEP_PLAYBACK_MS = 1600;

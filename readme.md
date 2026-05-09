@@ -37,21 +37,34 @@ Use Open Design as a reference for:
 
 Architecture decision after source analysis: SuperTeacher should reuse Open Design as the product workbench base, not only as UI inspiration. The detailed reuse plan is in `docs/open-design-reuse-analysis.md`.
 
-The current lightweight `frontend/` app is a disposable prototype for the education runtime loop. It should not become the long-term product shell. Long-term product development should move toward an Open Design-derived `apps/web` + `apps/daemon` workbench with SuperTeacher-specific education packages and skills.
+The Open Design-derived workbench now lives in `apps/web` and `apps/daemon`, with its upstream shared packages copied as `packages/od-*`. The current lightweight `frontend/` app remains a prototype for the education runtime loop and should not become the long-term product shell.
 
 ## Engineering direction
 
 Prefer a maintainable TypeScript monorepo with clear boundaries:
 
 ```text
+apps/web/                  # Open Design-derived product workbench frontend
+apps/daemon/               # Open Design-derived local daemon and project API
 frontend/                 # Teacher studio, presenter mode, published pages
 backend/                  # API, AI orchestration, projects, publishing, validation
 packages/contracts/       # ConceptSpec, API types, shared Zod schemas
+packages/edu-concepts/    # versioned seed specs and reusable lesson examples
 packages/edu-runtime/     # playback, variables, storyboard, runtime state
 packages/edu-components/  # reusable teaching interaction components
 packages/edu-validation/  # schema and domain validation
 packages/prompts/         # versioned AI prompts
+packages/od-*/            # copied Open Design shared packages
 reference/open-design/    # reference only
+```
+
+## Local development
+
+```bash
+npm install
+npm run dev              # Open Design-derived workbench baseline
+npm run dev:prototype    # temporary backend + Vite runtime loop
+npm run typecheck
 ```
 
 The first real component should be a high-quality `function-transform` interaction for quadratic functions, supporting `a/h/k` sliders, graph rendering, vertex annotation, and storyboard playback.

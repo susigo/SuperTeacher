@@ -1,9 +1,15 @@
 node_modules
 dist
 build
+.next/
+out/
 .DS_Store
 coverage
 .env
 *.log
+*.tsbuildinfo
 .turbo
 pnpm-lock.yaml
+.od/
+storage/
+backend/storage/

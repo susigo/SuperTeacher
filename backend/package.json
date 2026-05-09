@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@superteacher/contracts": "0.1.0",
+    "@superteacher/edu-concepts": "0.1.0",
     "@superteacher/edu-validation": "0.1.0",
     "@superteacher/edu-runtime": "0.1.0",
     "cors": "^2.8.5",

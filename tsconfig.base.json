@@ -17,8 +17,12 @@
       "@superteacher/edu-runtime/*": ["packages/edu-runtime/src/*"],
       "@superteacher/edu-components": ["packages/edu-components/src/index.ts"],
       "@superteacher/edu-components/*": ["packages/edu-components/src/*"],
+      "@superteacher/edu-concepts": ["packages/edu-concepts/src/index.ts"],
+      "@superteacher/edu-concepts/*": ["packages/edu-concepts/src/*"],
       "@superteacher/edu-validation": ["packages/edu-validation/src/index.ts"],
-      "@superteacher/edu-validation/*": ["packages/edu-validation/src/*"]
+      "@superteacher/edu-validation/*": ["packages/edu-validation/src/*"],
+      "@superteacher/prompts": ["packages/prompts/src/index.ts"],
+      "@superteacher/prompts/*": ["packages/prompts/src/*"]
     },
     "types": ["node"]
   }

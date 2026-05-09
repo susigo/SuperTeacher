@@ -1,0 +1,11 @@
+{
+  "name": "@superteacher/edu-concepts",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@superteacher/contracts": "0.1.0"
+  }
+}

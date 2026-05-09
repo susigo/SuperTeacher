@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export const schemaVersionSchema = z.literal('0.1.0');
+
 export const projectTypeSchema = z.union([
   z.literal('concept-card'),
   z.literal('interaction-deck'),
@@ -15,6 +17,14 @@ export const subjectSchema = z.union([
   z.literal('other'),
 ]);
 
+export const supportedInteractionTemplateSchema = z.literal('function-transform');
+
+export const interactionEngineSchema = z.union([
+  z.literal('svg'),
+  z.literal('canvas'),
+  z.literal('dom'),
+]);
+
 export const variableSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
@@ -27,8 +37,8 @@ export const variableSchema = z.object({
 });
 
 export const interactionSchema = z.object({
-  template: z.string(),
-  engine: z.literal('svg').or(z.literal('canvas')).or(z.literal('dom')),
+  template: supportedInteractionTemplateSchema,
+  engine: interactionEngineSchema,
   formula: z.string().default('y = a(x - h)^2 + k'),
   variables: z.array(variableSchema).default([]),
 });
@@ -42,20 +52,20 @@ export const storyboardActionSetSchema = z.object({
 });
 
 export const storyboardStepSchema = z.object({
-  id: z.string(),
-  title: z.string(),
+  id: z.string().min(1),
+  title: z.string().min(1),
   action: storyboardActionSetSchema,
   teacherScript: z.string().optional(),
 });
 
 export const conceptSpecSchema = z.object({
-  schemaVersion: z.string(),
+  schemaVersion: schemaVersionSchema,
   projectType: projectTypeSchema,
   subject: subjectSchema,
   grade: z.string().optional(),
   concept: z.object({
-    title: z.string(),
-    summary: z.string(),
+    title: z.string().min(1),
+    summary: z.string().min(1),
     learningGoals: z.array(z.string()).default([]),
     commonMisconceptions: z.array(z.string()).default([]),
   }),
@@ -63,9 +73,9 @@ export const conceptSpecSchema = z.object({
   storyboard: z.array(storyboardStepSchema).default([]),
   assessment: z.array(
     z.object({
-      type: z.string(),
-      question: z.string(),
-      answer: z.string(),
+      type: z.string().min(1),
+      question: z.string().min(1),
+      answer: z.string().min(1),
     }),
   ).default([]),
   theme: z
@@ -81,8 +91,11 @@ export const conceptSpecSchema = z.object({
     }),
 });
 
+export type SchemaVersion = z.infer<typeof schemaVersionSchema>;
 export type ProjectType = z.infer<typeof projectTypeSchema>;
 export type Subject = z.infer<typeof subjectSchema>;
+export type SupportedInteractionTemplate = z.infer<typeof supportedInteractionTemplateSchema>;
+export type InteractionEngine = z.infer<typeof interactionEngineSchema>;
 export type ConceptVariable = z.infer<typeof variableSchema>;
 export type ConceptInteraction = z.infer<typeof interactionSchema>;
 export type StoryboardStep = z.infer<typeof storyboardStepSchema>;
